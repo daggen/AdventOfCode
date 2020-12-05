@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace AdventOfCodeLib
+namespace AdventOfCodeLib.Travel
 {
     public class Passport
     {
@@ -33,8 +30,7 @@ namespace AdventOfCodeLib
                        .Select(s => s.Split(':'))
                        .ToDictionary(s => s[0], s => s[1]);
         }
-
-
+        
         public bool IsPresent => Data.Count(k => IsMandatoryField(k.Key)) == 7;
         public bool IsValid => IsEachFieldValid();
 

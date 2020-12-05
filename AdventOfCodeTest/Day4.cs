@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AdventOfCodeLib;
+using AdventOfCodeLib.Travel;
 using Xunit;
 using Xunit.Abstractions;
 
