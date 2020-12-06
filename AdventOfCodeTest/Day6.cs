@@ -12,7 +12,7 @@ namespace AdventOfCodeTest
     public class Day6
     {
         private const string FileNameInput = "../../Input/inputDay6.txt";
-        public IEnumerable<string> Input => File.ReadAllLines(FileNameInput);
+        public IEnumerable<string> Input => File.ReadLines(FileNameInput);
 
         [Fact]
         public void TestCountNUmberOfYes()
