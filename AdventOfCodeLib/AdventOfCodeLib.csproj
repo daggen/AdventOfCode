@@ -41,7 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Matchers\IMatcher.cs" />
+    <Compile Include="Matchers\IntMatcher.cs" />
+    <Compile Include="Matchers\IntWithUnitMatcher.cs" />
+    <Compile Include="Matchers\RegexMatcher.cs" />
     <Compile Include="Travel\Passport.cs" />
+    <Compile Include="Travel\PassportValidator.cs" />
     <Compile Include="Travel\PasswordPolicy.cs" />
     <Compile Include="Travel\Plane.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
