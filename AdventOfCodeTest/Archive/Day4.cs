@@ -2,9 +2,8 @@
 using System.Linq;
 using AdventOfCodeLib.Travel;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace AdventOfCodeTest
+namespace AdventOfCodeTest.Archive
 {
     public class Day4
     {
