@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computer\Computer.cs" />
+    <Compile Include="Computer\Instruction.cs" />
     <Compile Include="Matchers\IMatcher.cs" />
     <Compile Include="Matchers\IntMatcher.cs" />
     <Compile Include="Matchers\IntWithUnitMatcher.cs" />
