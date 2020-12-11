@@ -67,6 +67,7 @@
     <Compile Include="Archive\Day3.cs" />
     <Compile Include="Archive\Day4.cs" />
     <Compile Include="Archive\Day5.cs" />
+    <Compile Include="Day10.cs" />
     <Compile Include="Day6.cs" />
     <Compile Include="Day7.cs" />
     <Compile Include="Day8.cs" />
@@ -87,6 +88,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Input\inputDay10.txt" />
+    <Content Include="Input\inputDay10Small.txt" />
     <Content Include="Input\inputDay6.txt" />
     <Content Include="Input\inputDay7.txt" />
     <Content Include="Input\inputDay8.txt" />
