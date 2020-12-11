@@ -3,7 +3,7 @@ using System.IO;
 using AdventOfCodeLib.Travel;
 using Xunit;
 
-namespace AdventOfCodeTest
+namespace AdventOfCodeTest.Archive
 {
     public class Day7
     {

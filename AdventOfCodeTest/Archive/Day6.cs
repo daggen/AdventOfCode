@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AdventOfCodeLib.Utils;
 using Xunit;
 
-namespace AdventOfCodeTest
+namespace AdventOfCodeTest.Archive
 {
     public class Day6
     {
@@ -18,7 +15,7 @@ namespace AdventOfCodeTest
         public void TestCountNUmberOfYes()
         {
             var totalCount = Input.Split("")
-                                  .Select(ls => string.Join("", ls))
+                                  .Select(ls => string.Join((string)"", (IEnumerable<string>)ls))
                                   .Select(answer => answer.Distinct())
                                   .Select(nbrOfAnswers => nbrOfAnswers.Count())
                                   .Sum();

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using AdventOfCodeLib.Computer;
 using Xunit;
 
-namespace AdventOfCodeTest
+namespace AdventOfCodeTest.Archive
 {
     public class Day8
     {
