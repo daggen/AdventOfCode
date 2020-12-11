@@ -51,12 +51,9 @@ namespace AdventOfCodeTest
             }
         }
 
-        private SeatTypes[] ParseLine(string to)
-        {
-            return to.ToCharArray().Select(CharToSeatStatus).ToArray();
-        }
+        private static SeatTypes[] ParseLine(string to) => to.ToCharArray().Select(CharToSeatStatus).ToArray();
 
-        private SeatTypes CharToSeatStatus(char arg)
+        private static SeatTypes CharToSeatStatus(char arg)
         {
             switch (arg)
             {
@@ -71,10 +68,10 @@ namespace AdventOfCodeTest
 
         public void RunLineOfSight()
         {
-            Run(GetNumberOfOccupiedSeatsLineOfSight);
+            Run(GetNumberOfOccupiedSeatsLineOfSight, 5);
         }
 
-        private void RunOnce(Func<int, int, int> getNumberOfOccupiedSeats)
+        private void RunOnce(Func<int, int, int> getNumberOfOccupiedSeats, int max)
         {
             var copy = new SeatTypes[m_Model.Length][];
 
@@ -83,14 +80,14 @@ namespace AdventOfCodeTest
                 copy[i] = new SeatTypes[m_Model[0].Length];
                 for (var j = 0; j < copy[i].Length; j++)
                 {
-                    copy[i][j] = GetSeatType(i, j, getNumberOfOccupiedSeats);
+                    copy[i][j] = GetSeatType(i, j, max, getNumberOfOccupiedSeats);
                 }
             }
 
             m_Model = copy;
         }
 
-        private SeatTypes GetSeatType(int i, int j, Func<int,int, int> getNumberOfOccupiedSeats)
+        private SeatTypes GetSeatType(int i, int j, int max, Func<int,int, int> getNumberOfOccupiedSeats)
         {
             var current = m_Model[i][j];
             if (current == SeatTypes.Floor) return SeatTypes.Floor;
@@ -104,7 +101,7 @@ namespace AdventOfCodeTest
                                ? SeatTypes.Occupied
                                : SeatTypes.Free;
                 case SeatTypes.Occupied:
-                    return numberOfOccupiedAround >= 4
+                    return numberOfOccupiedAround >= max
                                ? SeatTypes.Free
                                : SeatTypes.Occupied;
             }
@@ -130,16 +127,16 @@ namespace AdventOfCodeTest
 
         public void RunAdjacent()
         {
-            Run(GetNumberOfAdjacentOccupiedSeats);
+            Run(GetNumberOfAdjacentOccupiedSeats, 4);
         }
 
-        private void Run(Func<int, int, int> getNumberOfOccupiedSeats)
+        private void Run(Func<int, int, int> getNumberOfOccupiedSeats, int max)
         {
             SeatTypes[][] copy;
             do
             {
                 copy = m_Model;
-                RunOnce(getNumberOfOccupiedSeats);
+                RunOnce(getNumberOfOccupiedSeats, max);
             }
             while (IsDifferent(m_Model, copy));
         }
