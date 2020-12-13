@@ -20,9 +20,9 @@ namespace AdventOfCodeTest.Archive
         }
 
         [Theory]
-        [InlineData("../../Input/inputDay9small.txt", 62, 5, 127)]
-        [InlineData("../../Input/inputDay9.txt", 35602097, 25, 257342611)]
-        public void Part2(string testData, int expectedValue, int preamble, int key)
+        [InlineData("../../Input/inputDay9small.txt", 62, 127)]
+        [InlineData("../../Input/inputDay9.txt", 35602097, 257342611)]
+        public void Part2(string testData, int expectedValue, int key)
         {
             var validator = new Validator(GetInput(testData).Where(w => w < key));
             var findKey = validator.FindKey(key);

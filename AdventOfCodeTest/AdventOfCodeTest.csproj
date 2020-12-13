@@ -73,6 +73,7 @@
     <Compile Include="Archive\Day8.cs" />
     <Compile Include="Archive\Day9.cs" />
     <Compile Include="Day11.cs" />
+    <Compile Include="Day12.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Archive\Day1.cs" />
   </ItemGroup>
@@ -93,6 +94,8 @@
     <Content Include="Input\inputDay10Small.txt" />
     <Content Include="Input\inputDay11.txt" />
     <Content Include="Input\inputDay11Small.txt" />
+    <Content Include="Input\inputDay12.txt" />
+    <Content Include="Input\inputDay12Small.txt" />
     <Content Include="Input\inputDay6.txt" />
     <Content Include="Input\inputDay7.txt" />
     <Content Include="Input\inputDay8.txt" />

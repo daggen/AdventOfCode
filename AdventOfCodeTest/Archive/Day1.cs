@@ -239,6 +239,7 @@ namespace AdventOfCodeTest.Archive
             }
         }
 
+        [Fact]
         public void TestMethodPartOne()
         {
             for (var i = 0; i < input.Count - 2; i++)
