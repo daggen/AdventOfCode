@@ -1,9 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using AdventOfCode2024.Day1;
-using AdventOfCode2024.Day2;
+using AdventOfCode2024.Day3;
 
 
-var day = new Day2();
+var day = new Day3();
 
-Console.WriteLine(day.GetValidReports());
+Console.WriteLine(day.GetSum());
