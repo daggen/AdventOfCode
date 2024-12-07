@@ -84,13 +84,22 @@ public class Day6
         private bool CanGoStraight
             => !_obstacles.Contains(new Position(currentPosition.X + direction.X, currentPosition.Y + direction.Y));
 
+        private bool CanGoTo(Position position)
+            => !_obstacles.Contains(position);
+
         public IEnumerable<Position> VisitedLocations => visited;
 
         private (Position position, bool turning) NextPosition()
         {
-            return CanGoStraight
-                ? (new Position(currentPosition.X + direction.X, currentPosition.Y + direction.Y), false)
-                : (new Position(currentPosition.X + -direction.Y, currentPosition.Y + direction.X), true);
+            if (CanGoStraight)
+                return (new Position(currentPosition.X + direction.X, currentPosition.Y + direction.Y), false);
+
+            var position = new Position(currentPosition.X + -direction.Y, currentPosition.Y + direction.X);
+            if (CanGoTo(position))
+                return (position, true);
+
+            position = new Position(currentPosition.X - direction.X, currentPosition.Y - direction.Y);
+            return (position, true);
         }
 
         public bool Move()
@@ -99,7 +108,7 @@ public class Day6
             var infinityLoop = false;
             if (turning)
             {
-                direction = new Position(-direction.Y, direction.X);
+                direction = new Position(next.X - currentPosition.X, next.Y - currentPosition.Y);
                 infinityLoop = !turningPoints.Add(currentPosition);
             }
             currentPosition = next;
