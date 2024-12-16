@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace AdventOfCode2024.Day10;
 
 public class Day10
