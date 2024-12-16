@@ -7,4 +7,4 @@ using AdventOfCode2024.Day12;
 
 var day = new Day13();
 
-Console.WriteLine(day.GetSum1());
+Console.WriteLine(day.GetSum2());

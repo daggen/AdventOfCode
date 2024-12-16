@@ -27,7 +27,7 @@ public class Day13
             var prizeNum = regex.Matches(lines.Current);
             valueX = int.Parse(prizeNum[0].Value);
             valueY = int.Parse(prizeNum[1].Value);
-            var prize = new Prize(valueX + 10000000000000, valueY + 10000000000000);
+            var prize = new Prize(valueX + 10_000_000_000_000, valueY + 10000000000000);
 
             var machine = new Machine(buttonA, buttonB, prize);
             machines.Add(machine);
@@ -35,10 +35,11 @@ public class Day13
             lines.MoveNext();
         }
 
-        var cost = machines.Sum(m => m.Solve());
+        var cost = machines.AsParallel().Sum(m => m.Solve());
 
         return cost.ToString();
     }
+
     public string GetSum1()
     {
         var lines = File.ReadLines("../../../Day13/Input.txt").GetEnumerator();
@@ -80,7 +81,8 @@ public class Day13
         public long Solve()
         {
             var minimumCost = 0L;
-            for (var a = 0; a <= 100; a++)
+            var gcd = GCD(buttonA.X, prize.X);
+            for (var a = 0L; a <= Math.Min(prize.X / buttonA.X, prize.Y / buttonA.Y); a += gcd)
             {
                 var leftX = prize.X - buttonA.X * a;
                 var leftY = prize.Y - buttonA.Y * a;
@@ -97,7 +99,21 @@ public class Day13
                 }
             }
 
+            Console.WriteLine(minimumCost);
             return minimumCost;
+        }
+
+        private static long GCD(long a, long b)
+        {
+            while (a != 0 && b != 0)
+            {
+                if (a > b)
+                    a %= b;
+                else
+                    b %= a;
+            }
+
+            return a | b;
         }
     }
 
