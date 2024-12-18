@@ -4,6 +4,46 @@ namespace AdventOfCode2024.Day15;
 
 public class Day15
 {
+    public string GetSum2()
+    {
+        var lines = File.ReadLines("../../../Day15/Input.txt")
+            .ToList();
+
+        var enumerable = lines.TakeWhile(l => !string.IsNullOrWhiteSpace(l)).ToList();
+        var maze = new Maze(enumerable
+            .Select((line, row) => line.Select((c, column) => CreateNode(row, column, c)))
+            .SelectMany(x => x)
+            .SelectMany(x => x)
+            .ToList());
+
+        var instructions = lines.Skip(enumerable.Count).SelectMany(x => x);
+
+        foreach (var instruction in instructions)
+        {
+            maze.MoveRobot(instruction);
+        }
+
+        return maze.SumOfAllBoxes().ToString();
+    }
+
+    private IEnumerable<Node> CreateNode(int row, int column, char c)
+    {
+        switch (c)
+        {
+            case '@':
+                yield return new Node(column, row, c);
+                break;
+            case '#':
+            case '.':
+                yield return new Node(column, row, c);
+                yield return new Node(column, row, c);
+                break;
+            case 'O':
+                yield return new BoxNode(column, row);
+                break;
+        }
+    }
+
     public string GetSum1()
     {
         var lines = File.ReadLines("../../../Day15/Input.txt")
@@ -31,14 +71,15 @@ public class Day15
         private readonly List<Node> _nodes;
         private Position _robotPosition;
 
-        public Maze( List<Node> nodes)
+        public Maze(List<Node> nodes)
         {
             _nodes = nodes;
             var node = nodes.First(n => n.IsRobot);
             _nodes.Remove(node);
             _nodes.Add(new Node(node.X, node.Y, '.'));
-            _robotPosition =  new Position(node.X, node.Y);
+            _robotPosition = new Position(node.X, node.Y);
         }
+
         public void MoveRobot(char instruction)
         {
             var newPosition = GetPositionInDirection(instruction, _robotPosition);
@@ -54,21 +95,49 @@ public class Day15
             }
 
             // it is a box
-            var next = node;
-            while (next.IsBox)
+            if (CanMoveBox(node, instruction))
             {
-                var pos = GetPositionInDirection(instruction, next);
-                next = FindInPosition(pos);
+                MoveBox(node, instruction);
+            }
+        }
+
+        private void MoveBox(Node node, char instruction)
+        {
+            var positions = node.GetPositions()
+                .Select(p => GetPositionInDirection(instruction, p));
+
+            var itemsInPositions = positions
+                .Select(FindInPosition)
+                .Distinct()
+                .ToList();
+
+            foreach (var box in itemsInPositions.Where(p => p.IsBox && p != node))
+                MoveBox(box, instruction);
+
+            foreach (var free in itemsInPositions.Where(n => n.IsFree))
+            {
+                _nodes.Remove(free);
             }
 
-            if (next.IsWall)
-                return;
-
-            _nodes.Remove(next);
-            _nodes.Add(new Node(next.X, next.Y, 'O'));
-            _robotPosition = newPosition;
             _nodes.Remove(node);
-            _nodes.Add(new Node(node.X, node.Y, '.'));
+            _nodes.Add(node.Move(GetPositionInDirection(instruction, node)));
+            _nodes.AddRange(node.GetPositions().Select(p => new Node(p.X, p.Y, '.')));
+        }
+
+        private bool CanMoveBox(Node node, char instruction)
+        {
+            var positions = node.GetPositions()
+                .Select(p => GetPositionInDirection(instruction, p));
+
+            var itemsInPositions = positions
+                .Select(FindInPosition)
+                .Where(n => n != node)
+                .Distinct()
+                .ToList();
+            if (itemsInPositions.Any(n => n.IsWall))
+                return false;
+
+            return itemsInPositions.All(p => p.IsFree || CanMoveBox(p, instruction));
         }
 
         private Position GetPositionInDirection(char instruction, Position position)
@@ -92,22 +161,23 @@ public class Day15
             {
                 for (var column = 0; column <= right; column++)
                 {
-                    var node = _nodes.First(n => n.X == column && n.Y == row);
+                    var position = new Position(column, row);
+                    var node = FindInPosition(position);
                     if (node == _robotPosition)
                     {
                         sb.Append('@');
                     }
                     else if (node.IsWall)
                     {
-                        sb.Append('#');
+                        sb.Append("#");
                     }
                     else if (node.IsBox)
                     {
-                        sb.Append('O');
+                        sb.Append("[]");
                     }
                     else
                     {
-                        sb.Append('.');
+                        sb.Append(".");
                     }
                 }
 
@@ -117,12 +187,15 @@ public class Day15
             return sb.ToString();
         }
 
-        private Node FindInPosition(Position position) => _nodes.First(n => n.X == position.X && n.Y == position.Y);
+        private Node FindInPosition(Position position) => _nodes.First(
+            n => n.IsInPosition(position));
 
         public long SumOfAllBoxes() => _nodes.Where(n => n.IsBox).Sum(n => n.X + 100 * n.Y);
     }
 
-    private record Position(int X, int Y);
+    public record Position(
+        int X,
+        int Y);
 
     private class Node(
         int x,
@@ -138,5 +211,30 @@ public class Day15
         public bool IsFree => value == '.';
 
         public static implicit operator Position(Node node) => new(node.X, node.Y);
+
+        public IEnumerable<Position> GetPositions()
+        {
+            yield return new Position(x, y);
+
+            if (IsBox)
+                yield return new Position(x + 1, y);
+        }
+
+        public bool IsInPosition(Position position) => GetPositions().Contains(position);
+
+        public Node Move(Position to) => new(x + to.X, y + to.Y, value);
     }
+
+    private class BoxNode(
+        int x,
+        int y) : Node(x, y, 'O')
+    {
+        public static implicit operator Position(BoxNode node) => new(node.X, node.Y);
+    }
+}
+
+public static class PositionExtensions
+{
+    public static Day15.Position Add(this Day15.Position p1, Day15.Position p2)
+        => new(X: p1.X + p2.X, Y: p1.Y + p2.Y);
 }
