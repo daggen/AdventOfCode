@@ -46,48 +46,44 @@ public class Day7
 
     [Theory]
     [InlineData(SampleData, 40)]
-    [InlineData(PuzzleData, 15093663987272)]
+    [InlineData(PuzzleData, 15_093_663_987_272)]
     public async Task Part2(string input, long extexted)
     {
         var lines = input.Split('\n');
-        var calculated = new ConcurrentDictionary<(int, int), long>();
+        var calculated = new ConcurrentDictionary<(int, int), Task<long>>();
         var timelines = await GetTimeLines(lines[1..], lines[0].IndexOf("S", StringComparison.Ordinal), calculated);
 
         Assert.Equal(extexted, timelines);
     }
 
-    private async Task<long> GetTimeLines(string[] line, int tachyon, ConcurrentDictionary<(int, int), long> calculated)
+    private async Task<long> GetTimeLines(string[] line, int tachyon, ConcurrentDictionary<(int, int), Task<long>> calculated)
     {
         if (line.Length == 0)
         {
-            calculated[(0, tachyon)] = 1;
+            calculated[(0, tachyon)] = Task.FromResult(1L);
             return 1;
         }
 
         if (tachyon < 0 || tachyon >= line[0].Length)
             return 0;
 
-        switch (line[0][tachyon])
-        {
-            case '.':
-                return await GetValue(line, tachyon, calculated);
-            case '^':
-                var a = GetValue(line, tachyon - 1, calculated);
-                var b = GetValue(line, tachyon + 1, calculated);
-                await Task.WhenAll(a, b);
-                return await a + await b;
-            default:
-                throw new InvalidOperationException($"value: {line[tachyon]}");
-        }
+        return line[0][tachyon] switch
+               {
+                   '.' => await GetSingleValue(line, tachyon, calculated),
+                   '^' => await GetSplittedValue(line, tachyon, calculated),
+                   _ => throw new InvalidOperationException($"value: {line[tachyon]}"),
+               };
     }
-    private async Task<long> GetValue(string[] line, int tachyon, ConcurrentDictionary<(int, int), long> calculated)
+    private async Task<long> GetSplittedValue(string[] line, int tachyon, ConcurrentDictionary<(int, int), Task<long>> calculated)
     {
-        if (calculated.TryGetValue((line.Length, tachyon), out var value))
-        {
-            return value;
-        }
-        var timeLines = await GetTimeLines(line[1..],  tachyon, calculated);
-        calculated[(line.Length, tachyon)] = timeLines;
-        return timeLines;
+        var a = GetSingleValue(line, tachyon - 1, calculated);
+        var b = GetSingleValue(line, tachyon + 1, calculated);
+        await Task.WhenAll(a, b);
+        return await a + await b;
+    }
+
+    private async Task<long> GetSingleValue(string[] line, int tachyon, ConcurrentDictionary<(int, int), Task<long>> calculated)
+    {
+        return await calculated.GetOrAdd((line.Length, tachyon), _ => GetTimeLines(line[1..], tachyon, calculated));
     }
 }
